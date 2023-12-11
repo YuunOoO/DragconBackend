@@ -21,7 +21,8 @@ use Symfony\Component\Routing\RouterInterface;
         uriTemplate: '/tools-by-ekipa/{ekipa_id}',
         controller: ToolController::class,
     ),
-    new Get(controller: null),
+    new GetCollection(),
+    new Get(),
     new Post(),
     new Patch(),
     new Delete()
@@ -114,5 +115,10 @@ class Tool
         }
 
         return null;
+    }
+
+    public function getTeamName(): ?string
+    {
+        return $this->team ? $this->team->getName() : null;
     }
 }

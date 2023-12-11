@@ -27,34 +27,23 @@ class TaskController extends AbstractController
     {
     $tasks = $this->entityManager->getRepository(Task::class)->findBy(['team' => $ekipa_id], ['priority' => 'ASC']);
 
-    $groupedTasks = [
-        'Backlog' => [],
-        'InProgress' => [],
-        'Done' => [],
-    ];
-
+    $taskList = [];
     foreach ($tasks as $task) {
         $taskData = [
             'task_id' => $task->getTaskId(),
             'about' => $task->getAbout(),
             'data_reg' => $task->getDataReg()->format('Y-m-d H:i:s'),
-            'time_exec' => $task->getTimeExec()->format('Y-m-d H:i:s'),
+            'time_exec' => $task->getTimeExec() !== null ? $task->getTimeExec()->format('Y-m-d H:i:s') : null,
             'type' => $task->getType(),
             'priority' => $task->getPriority(),
+            'location' => $task->getLocation(),
+            'ekipa_id' => $ekipa_id,
         ];
+        $taskList[] = $taskData;
 
-        $type = $task->getType();
-
-        if ($type === 'Backlog') {
-            $groupedTasks['Backlog'][] = $taskData;
-        } elseif ($type === 'InProgress') {
-            $groupedTasks['InProgress'][] = $taskData;
-        } elseif ($type === 'Done') {
-            $groupedTasks['Done'][] = $taskData;
-        }
 
     }
-    return new JsonResponse($groupedTasks, Response::HTTP_CREATED, [
+    return new JsonResponse($taskList, Response::HTTP_CREATED, [
         'Content-Type' => 'application/json',
     ]);
     }

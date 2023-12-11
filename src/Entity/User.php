@@ -14,18 +14,27 @@ use ApiPlatform\Metadata\Delete;
 use App\Controller\UserController;
 
 #[ORM\Entity]
-#[ApiResource(operations: [
-    new GetCollection(
-        name: 'users_by_ekipa',
-        routeName: "team_users",
-        uriTemplate: '/users-by-ekipa/{ekipa_id}',
-        controller: UserController::class,
-    ),
-    new Get(controller: null),
-    new Post(),
-    new Patch(),
-    new Delete()
-])]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            name: 'users_by_ekipa',
+            routeName: "team_users",
+            uriTemplate: '/users-by-ekipa/{ekipa_id}',
+            controller: UserController::class,
+        ),
+        new Post(
+            name: 'user_login',
+            routeName: "user_login",
+            uriTemplate: '/login',
+            controller: UserController::class,
+        ),
+        new GetCollection(),
+        new Get(),
+        new Post(),
+        new Patch(),
+        new Delete()
+    ],
+)]
 class User
 {
     #[ORM\Id]
@@ -48,7 +57,7 @@ class User
 
     #[ORM\ManyToOne(targetEntity: "Team")]
     #[ORM\JoinColumn(name: "ekipa_id", referencedColumnName: "ekipa_id")]
-    #[ApiProperty(example:"/api/teams/{ekipa_id}")]
+    #[ApiProperty(example: "/api/teams/{ekipa_id}")]
     private $team;
 
     public function getKeyId(): ?int
@@ -130,5 +139,10 @@ class User
         }
 
         return null;
+    }
+
+    public function getTeamName(): ?string
+    {
+        return $this->team ? $this->team->getName() : null;
     }
 }

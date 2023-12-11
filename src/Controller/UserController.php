@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
@@ -41,6 +42,28 @@ class UserController extends AbstractController
         'Content-Type' => 'application/json',
     ]);
     }
+
+    #[Route("/login", name: "user_login", methods: ["POST"])]
+    public function userLogin(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $userId = $data['id'] ?? null;
+        $password = $data['password'] ?? null;
+
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['id' => $userId]);
+
+        if (!$user) {
+            return new JsonResponse(['message' => 'User not found'], 404);
+        }
+
+        if ($password !== $user->getPassword()) {
+            return new JsonResponse(['message' => 'Wrong password'], 401);
+        }
+
+        return $this->json($user);
+    }
+    
     
 }
 

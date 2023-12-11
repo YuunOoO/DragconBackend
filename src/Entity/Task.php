@@ -21,7 +21,8 @@ use Symfony\Component\Routing\RouterInterface;
         uriTemplate: '/tasks-by-ekipa/{ekipa_id}',
         controller: TaskController::class,
     ),
-    new Get(controller: null),
+    new Get(),
+    new GetCollection(),
     new Post(),
     new Patch(),
     new Delete(),
@@ -37,10 +38,13 @@ class Task
     #[ORM\Column]
     private ?string $about = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column]
+    private ?string $location = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $data_reg = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime', nullable:true)]
     private ?\DateTimeInterface $time_exec = null;
 
     #[ORM\Column(length: 255)]
@@ -70,6 +74,19 @@ class Task
 
         return $this;
     }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
 
     public function getDataReg(): ?\DateTimeInterface
     {

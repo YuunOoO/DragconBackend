@@ -34,6 +34,8 @@ class ToolController extends AbstractController
             'amount' => $tool->getAmount(),
             'mark' => $tool->getMark(),
             'type' => $tool->getType(),
+            'ekipaId' => $ekipa_id,
+            'teamName' => $tool->getTeamName(),
         ];
     }
     return new JsonResponse($response, Response::HTTP_CREATED, [
